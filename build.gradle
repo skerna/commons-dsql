@@ -1,7 +1,6 @@
 buildscript {
     ext.projectVersion = version
     ext.projectName = 'dsql'
-    ext.projectGroup = 'io.skerna.dsql'
     ext.projectDesc = 'SQL4K : Portable DSL sql'
     ext.projectHost = 'gitlab'
     ext.projectOrg = 'dsql'
@@ -22,7 +21,6 @@ buildscript {
 
 allprojects {
 
-    group projectGroup
     version projectVersion
 
     repositories {
@@ -32,5 +30,13 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+    }
+}
+
+["assemble","build","clean","publishToMavenLocal"].forEach{ taskName ->
+    tasks.create(taskName){ newTask->
+        subprojects.forEach{ subproject->
+            newTask.dependsOn(":$subproject.name:$taskName")
+        }
     }
 }
